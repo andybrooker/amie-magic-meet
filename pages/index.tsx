@@ -496,7 +496,9 @@ const Page3 = ({
             }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ fontWeight: 500 }}>{value.name}</div>
+            <div style={{ fontWeight: 500, color: "var(--gray12)" }}>
+              {value.name}
+            </div>
             <div
               className={styles.nowrap}
               style={{
