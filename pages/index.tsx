@@ -5,7 +5,8 @@ import * as Separator from "@radix-ui/react-separator";
 import * as Avatar from "@radix-ui/react-avatar";
 import React from "react";
 import styled from "styled-components";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikErrors, FormikTouched } from "formik";
+import * as Yup from "yup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,6 +47,11 @@ export default function Home() {
 }
 
 type MeetPage = 1 | 2 | 3;
+
+const MeetSchema = Yup.object().shape({
+  origin: Yup.string().required("Required!"),
+  destination: Yup.string().required("Required!"),
+});
 
 const Widget = () => {
   const [background, setBackground] =
@@ -174,7 +180,21 @@ const Wizard = ({
       radius: string;
       origin: string;
       destination: string;
-    }
+    },
+    errors: FormikErrors<{
+      travelMode: string;
+      term: string;
+      radius: string;
+      origin: string;
+      destination: string;
+    }>,
+    touched: FormikTouched<{
+      travelMode: string;
+      term: string;
+      radius: string;
+      origin: string;
+      destination: string;
+    }>
   ) => {
     switch (page) {
       case 1:
@@ -185,6 +205,8 @@ const Wizard = ({
             setMagicMeet={setMagicMeet}
             handleChange={handleChange}
             values={values}
+            touched={touched}
+            errors={errors}
           />
         );
       case 3:
@@ -242,11 +264,14 @@ const Wizard = ({
         origin: "",
         destination: "",
       }}
+      validationSchema={MeetSchema}
       onSubmit={(values) => {
         handleClick(values);
       }}
     >
-      {({ handleChange, values }) => <> {renderPage(handleChange, values)}</>}
+      {({ handleChange, values, errors, touched }) => (
+        <> {renderPage(handleChange, values, errors, touched)}</>
+      )}
     </Formik>
   );
 };
@@ -379,8 +404,17 @@ const Page3 = ({
           coffee halfway on a cycle between Shoreditch, London and Kennington,
           London. <br /> <br />
           <div style={{ textAlign: "left", fontSize: "12px" }}>
-            Midpoint: {data?.region.center.latitude},{" "}
-            {data?.region.center.longitude}
+            {data?.region?.center?.latitude &&
+            data?.region?.center?.longitude ? (
+              <div>
+                Midpoint: {data?.region.center.latitude},{" "}
+                {data?.region.center.longitude}
+              </div>
+            ) : (
+              <div style={{ textAlign: "center" }}>
+                Midpoint not found, try more precise locations.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -579,10 +613,32 @@ const Page1 = () => {
   );
 };
 
+const ErrorDiv = ({ error }: { error: string }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        fontSize: "10px",
+        color: "#E87975",
+        right: 0,
+        top: 0,
+        bottom: 0,
+        display: "flex",
+        alignItems: "center",
+        fontWeight: 600,
+      }}
+    >
+      {error}
+    </div>
+  );
+};
+
 const Page2 = ({
   setMagicMeet,
   values,
   handleChange,
+  touched,
+  errors,
 }: {
   setMagicMeet: (page: MeetPage) => void;
   values: {
@@ -593,6 +649,20 @@ const Page2 = ({
     destination: string;
   };
   handleChange: any;
+  errors: FormikErrors<{
+    travelMode: string;
+    term: string;
+    radius: string;
+    origin: string;
+    destination: string;
+  }>;
+  touched: FormikTouched<{
+    travelMode: string;
+    term: string;
+    radius: string;
+    origin: string;
+    destination: string;
+  }>;
 }) => {
   const travelOptions = [
     {
@@ -664,8 +734,6 @@ const Page2 = ({
     },
   ];
 
-  const [radius, setRadius] = React.useState<string>("1200");
-
   return (
     <Form
       style={{
@@ -706,7 +774,7 @@ const Page2 = ({
         </div>
         <div>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <Avatar.Root className="AvatarRoot">
                 <Avatar.Image
                   className="AvatarImage"
@@ -717,16 +785,21 @@ const Page2 = ({
                   AB
                 </Avatar.Fallback>
               </Avatar.Root>
-              <Field
-                style={{ flex: 1 }}
-                className={styles.input}
-                type="text"
-                id="origin"
-                name="origin"
-                placeholder="Where are you?"
-              />
+              <div style={{ position: "relative", flex: 1 }}>
+                <Field
+                  style={{ flex: 1 }}
+                  className={styles.input}
+                  type="text"
+                  id="origin"
+                  name="origin"
+                  placeholder="Where are you?"
+                />
+                {errors.origin && touched.origin ? (
+                  <ErrorDiv error={errors.origin} />
+                ) : null}
+              </div>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <Avatar.Root className="AvatarRoot">
                 <Avatar.Image
                   className="AvatarImage"
@@ -737,14 +810,19 @@ const Page2 = ({
                   DM
                 </Avatar.Fallback>
               </Avatar.Root>
-              <Field
-                style={{ flex: 1 }}
-                className={styles.input}
-                type="text"
-                id="destination"
-                name="destination"
-                placeholder="Where are they?"
-              />
+              <div style={{ position: "relative", flex: 1 }}>
+                <Field
+                  style={{ flex: 1 }}
+                  className={styles.input}
+                  type="text"
+                  id="destination"
+                  name="destination"
+                  placeholder="Where are they?"
+                />
+                {errors.destination && touched.destination ? (
+                  <ErrorDiv error={errors.destination} />
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

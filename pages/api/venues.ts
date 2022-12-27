@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import getCoord from "./helpers/maps"
-const API_KEY = "pGVzIvhzUYF_JeNjMPus0vxbg55ZzA3AZlOeL_DJil3cmnWOZIm6ehX-mWiidWfBB6fG59r90xWT0nzeybV9uQQ-6aRxGbSBV2MpleS05WJTxYNSSX6q8vKcCgSmY3Yx"
+const API_KEY = process.env.YELP_API_KEY
 
 type Data = {
   latitude: string;

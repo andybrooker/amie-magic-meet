@@ -1,6 +1,6 @@
 var  polyline = require("@mapbox/polyline")
 
-const GOOGLE_API_KEY = 'AIzaSyCNZwx5SCn1ECQOYHRp9SZGfIcNs5pNAy0'
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY
 
 const getRoute = async (origin, destination, transportType) => {
     const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=${transportType}&key=${GOOGLE_API_KEY}`)
