@@ -543,6 +543,7 @@ const Page1 = () => {
         display: "flex",
         flexDirection: "column",
         height: "270px",
+        gap: "4px",
         justifyContent: "space-between",
       }}
     >
