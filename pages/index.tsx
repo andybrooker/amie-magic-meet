@@ -487,7 +487,7 @@ const Page3 = ({
 
           <Container
             inputColor={hoverbackground ? hoverbackground : ""}
-            className={styles.hover}
+            className={styles.hover + " " + styles.nowrap}
             onClick={() => {
               setLocation({ name: value.name, location: value.location });
               setMagicMeet(1);
