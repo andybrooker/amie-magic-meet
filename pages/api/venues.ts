@@ -14,15 +14,11 @@ export default async function handler(
 ) {
 
   const {origin, destination, travelMode, term, radius} = req.query;
-
-  console.log(origin, destination, travelMode, term, radius)
   
   const midPoint: [number, number] = await getCoord(origin, destination, travelMode)
 
   const latitude = midPoint[0].toString();
   const longitude = midPoint[1].toString();
-
-  console.log(latitude, longitude)
 
   const options = {
     method: 'GET',
