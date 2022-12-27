@@ -194,7 +194,8 @@ const Wizard = ({
       radius: string;
       origin: string;
       destination: string;
-    }>
+    }>,
+    isLoading: boolean
   ) => {
     switch (page) {
       case 1:
@@ -207,6 +208,7 @@ const Wizard = ({
             values={values}
             touched={touched}
             errors={errors}
+            isLoading={isLoading}
           />
         );
       case 3:
@@ -270,7 +272,7 @@ const Wizard = ({
       }}
     >
       {({ handleChange, values, errors, touched }) => (
-        <> {renderPage(handleChange, values, errors, touched)}</>
+        <> {renderPage(handleChange, values, errors, touched, isLoading)}</>
       )}
     </Formik>
   );
@@ -639,6 +641,7 @@ const Page2 = ({
   handleChange,
   touched,
   errors,
+  isLoading,
 }: {
   setMagicMeet: (page: MeetPage) => void;
   values: {
@@ -663,6 +666,7 @@ const Page2 = ({
     origin: string;
     destination: string;
   }>;
+  isLoading: boolean;
 }) => {
   const travelOptions = [
     {
@@ -911,10 +915,21 @@ const Page2 = ({
           </div>
         </div>
         <button className={styles.gobtn} type="submit">
-          Go!
+          {isLoading ? <Spinner /> : "Go!"}
         </button>
       </div>
     </Form>
+  );
+};
+
+const Spinner = () => {
+  return (
+    <div className="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   );
 };
 
